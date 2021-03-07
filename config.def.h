@@ -5,8 +5,15 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
-static int borderpx = 2;
+static char *font = "JetBrainsMono Nerd Font Bandit:style=Medium,Regular:pixelsize=10:antialias=true:autohint=true";
+/* Spare fonts */
+static char *font2[] = {
+    "Font Awesome 5 Brands:style=Regular:pixelsize=10:antialias=true:autohint=true",
+    "octicons:style=Medium:pixelsize=10:antialias=true:autohint=true",
+    "JoyPixels:pixelsize=10:antialias=true:autohint=true",
+};
+
+static int borderpx = 0;
 
 /*
  * What program is execed by st depends of these precedence rules:
