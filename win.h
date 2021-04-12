@@ -23,10 +23,33 @@ enum win_mode {
 	                  |MODE_MOUSEMANY,
 };
 
+/* Purely graphic info */
+typedef struct {
+	int tw, th; /* tty width and height */
+	int w, h; /* window width and height */
+	int ch; /* char height */
+	int cw; /* char width  */
+	int mode; /* window state/mode flags */
+	int cursor; /* cursor style */
+} TermWindow;
+
+// /* Purely graphic info */
+// typedef struct {
+// 	int tw, th; /* tty width and height */
+// 	int w, h; /* window width and height */
+// 	int ch; /* char height */
+// 	int cw; /* char width  */
+// 	int cyo; /* char y offset */
+// 	int mode; /* window state/mode flags */
+// 	int cursor; /* cursor style */
+// } TermWindow;
+
+TermWindow gettermwindow(void);
 void xbell(void);
 void xclipcopy(void);
 void xdrawcursor(int, int, Glyph, int, int, Glyph);
 void xdrawline(Line, int, int, int);
+void xdrawsixel(SixelContext *, Line *, int, int);
 void xfinishdraw(void);
 void xloadcols(void);
 int xsetcolorname(int, const char *);
@@ -36,5 +59,11 @@ int xsetcursor(int);
 void xsetmode(int, unsigned int);
 void xsetpointermotion(int);
 void xsetsel(char *);
+int xsixelinit(SixelContext *);
+void xsixelscrolldown(SixelContext *, int, int);
+void xsixelscrollup(SixelContext *, int, int);
+void xsixelnewimage(SixelContext *, int, int);
+int xsixelparse(SixelContext *, unsigned char *, int);
+void xsixeldeleteimage(SixelContext *, ImageList *);
 int xstartdraw(void);
 void xximspot(int, int);
