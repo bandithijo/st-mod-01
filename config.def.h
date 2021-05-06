@@ -274,6 +274,8 @@ static Shortcut shortcuts[] = {
 	{ MODKEY,               XK_o,           opencopied,     {.v = "xdg-open"} },
 	{ TERMMOD,              XK_Return,      newterm,        {.i =  0} },
 	{ TERMMOD,              XK_X,           invert,         { }       },
+	{ TERMMOD,              XK_I,           borderesize,    {.f = +1} },
+	{ TERMMOD,              XK_D,           borderesize,    {.f = -1} },
 };
 
 /*
