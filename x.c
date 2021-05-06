@@ -59,6 +59,7 @@ static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
+static void borderesize(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -326,6 +327,18 @@ void
 ttysend(const Arg *arg)
 {
 	ttywrite(arg->s, strlen(arg->s), 1);
+}
+
+void
+borderesize(const Arg *arg)
+{
+	if ((borderpx + arg->f) >= 0)
+		borderpx += arg->f;
+	else
+		return;
+
+	redraw();
+	xhints();
 }
 
 int
