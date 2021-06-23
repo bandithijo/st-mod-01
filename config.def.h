@@ -252,6 +252,8 @@ static MouseShortcut mshortcuts[] = {
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
 };
 
+static char *openurl[] = { "/bin/sh", "-c", "sed 's/ssh:\\/\\///g' | ~/.local/bin/./st-urlopener", "externalpipe", NULL, NULL };
+
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
@@ -277,6 +279,7 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_X,           invert,         { }       },
 	{ TERMMOD,              XK_I,           borderesize,    {.f = +1} },
 	{ TERMMOD,              XK_D,           borderesize,    {.f = -1} },
+    { TERMMOD,              XK_U,           externalpipe,   {.v = openurl} },
 };
 
 /*
