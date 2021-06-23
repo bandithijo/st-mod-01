@@ -8,10 +8,11 @@
 static char *font = "JetBrainsMono Nerd Font Bandit:style=Medium,Regular:pixelsize=10:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
-    "Font Awesome 5 Brands:style=Regular:pixelsize=10:antialias=true:autohint=true",
     "octicons:style=Medium:pixelsize=10:antialias=true:autohint=true",
-    "JoyPixels:pixelsize=10:antialias=true:autohint=true",
+    "Noto Color Emoji:pixelsize=10:antialias=true:autohint=true",
 };
+    /* "Font Awesome 5 Brands:style=Regular:pixelsize=10:antialias=true:autohint=true", */
+    /* "JoyPixels:pixelsize=10:antialias=true:autohint=true", */
 
 static int borderpx = 0;
 
