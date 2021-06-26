@@ -252,7 +252,7 @@ static MouseShortcut mshortcuts[] = {
 	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
 };
 
-static char *openurl[] = { "/bin/sh", "-c", "sed 's/ssh:\\/\\///g' | ~/.local/bin/./st-urlopener", "externalpipe", NULL, NULL };
+static char *openurl[] = { "/bin/sh", "-c", "sed 's/ssh:\\/\\///g' | urlopener", "externalpipe", NULL, NULL };
 
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
