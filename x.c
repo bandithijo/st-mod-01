@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <locale.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <sys/select.h>
 #include <time.h>
 #include <unistd.h>
@@ -1116,7 +1117,7 @@ xinit(int cols, int rows)
 		die("could not init fontconfig.\n");
 
 	usedfont = (opt_font == NULL)? font : opt_font;
-	xloadfonts(usedfont, 0);
+	xloadfonts(usedfont, defaultfontsize);
 
 	/* colors */
 	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);
@@ -2039,6 +2040,11 @@ main(int argc, char *argv[])
 		break;
 	case 'v':
 		die("%s " VERSION "\n", argv0);
+		break;
+	case 'z':
+		defaultfontsize = strtod(EARGF(usage()), NULL);
+		if (!(defaultfontsize > 0))
+			usage();
 		break;
 	default:
 		usage();
