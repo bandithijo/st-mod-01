@@ -255,6 +255,7 @@ static char *opt_name  = NULL;
 static char *opt_title = NULL;
 
 static uint buttons; /* bit field of pressed buttons */
+
 static int invertcolors = 0;
 
 void
