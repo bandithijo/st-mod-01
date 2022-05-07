@@ -8,9 +8,9 @@
 static char *font = "JetBrainsMono Nerd Font Bandit:style=Medium:pixelsize=12:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
-    "JoyPixels:pixelsize=12:antialias=true:autohint=true",
+    "Twitter Color Emoji:pixelsize=12:antialias=true:autohint=true",
 };
-    /* "Twitter Color Emoji:pixelsize=12:antialias=true:autohint=true", */
+    /* "JoyPixels:pixelsize=12:antialias=true:autohint=true", */
     /* "Noto Color Emoji:style=Regular:pixelsize=12:antialias=true:autohint=true", */
     /* "octicons:style=Medium:pixelsize=12:antialias=true:autohint=true", */
     /* "Font Awesome 5 Brands:style=Regular:pixelsize=10:antialias=true:autohint=true", */
