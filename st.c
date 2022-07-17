@@ -1883,13 +1883,13 @@ strhandle(void)
 		switch (par) {
 		case 0:
 			if (narg > 1) {
-				xsettitle(strescseq.args[1]);
-				xseticontitle(strescseq.args[1]);
+				xsettitle(STRESCARGJUST(1));
+				xseticontitle(STRESCARGJUST(1));
 			}
 			return;
 		case 1:
 			if (narg > 1)
-				xseticontitle(strescseq.args[1]);
+				xseticontitle(STRESCARGJUST(1));
 			return;
 		case 2:
 			if (narg > 1)
@@ -1911,7 +1911,7 @@ strhandle(void)
 		case 12:
 			if (narg < 2)
 				break;
-			p = strescseq.args[1];
+			p = STRESCARGJUST(1);
 			if ((j = par - 10) < 0 || j >= LEN(osc_table))
 				break; /* shouldn't be possible */
 
