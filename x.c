@@ -19,6 +19,7 @@ char *argv0;
 #include "arg.h"
 #include "st.h"
 #include "win.h"
+#include "hb.h"
 
 /* types used in config.h */
 typedef struct {
@@ -59,6 +60,7 @@ static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
+static void invert(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -253,6 +255,28 @@ static char *opt_name  = NULL;
 static char *opt_title = NULL;
 
 static uint buttons; /* bit field of pressed buttons */
+
+static int invertcolors = 0;
+
+void
+invert(const Arg *dummy)
+{
+	invertcolors = !invertcolors;
+	redraw();
+}
+
+Color
+invertedcolor(Color *clr)
+{
+	XRenderColor rc;
+	Color inverted;
+	rc.red = ~clr->color.red;
+	rc.green = ~clr->color.green;
+	rc.blue = ~clr->color.blue;
+	rc.alpha = clr->color.alpha;
+	XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &rc, &inverted);
+	return inverted;
+}
 
 void
 clipcopy(const Arg *dummy)
@@ -812,6 +836,7 @@ xloadcols(void)
 			else
 				die("could not allocate color %d\n", i);
 		}
+
 	loaded = 1;
 }
 
@@ -851,9 +876,11 @@ xsetcolorname(int x, const char *name)
 void
 xclear(int x1, int y1, int x2, int y2)
 {
-	XftDrawRect(xw.draw,
-			&dc.col[IS_SET(MODE_REVERSE)? defaultfg : defaultbg],
-			x1, y1, x2-x1, y2-y1);
+	Color c;
+	c = dc.col[IS_SET(MODE_REVERSE)? defaultfg : defaultbg];
+	if (invertcolors)
+		c = invertedcolor(&c);
+	XftDrawRect(xw.draw, &c, x1, y1, x2-x1, y2-y1);
 }
 
 void
@@ -1062,6 +1089,9 @@ xunloadfont(Font *f)
 void
 xunloadfonts(void)
 {
+	/* Clear Harfbuzz font cache. */
+	hbunloadfonts();
+
 	/* Free the loaded fonts in the font cache.  */
 	while (frclen > 0)
 		XftFontClose(xw.dpy, frc[--frclen].font);
@@ -1263,7 +1293,7 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 		mode = glyphs[i].mode;
 
 		/* Skip dummy wide-character spacing. */
-		if (mode == ATTR_WDUMMY)
+		if (mode & ATTR_WDUMMY)
 			continue;
 
 		/* Determine font for glyph if different from previous glyph. */
@@ -1375,6 +1405,9 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 		numspecs++;
 	}
 
+	/* Harfbuzz transformation for ligatures. */
+	hbtransform(specs, glyphs, len, x, y);
+
 	return numspecs;
 }
 
@@ -1470,6 +1503,13 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	if (base.mode & ATTR_INVISIBLE)
 		fg = bg;
 
+	if (invertcolors) {
+		revfg = invertedcolor(fg);
+		revbg = invertedcolor(bg);
+		fg = &revfg;
+		bg = &revbg;
+	}
+
     if (dmode & DRAW_BG) {
         /* Intelligent cleaning up of the borders. */
         if (x == 0) {
@@ -1521,14 +1561,17 @@ xdrawglyph(Glyph g, int x, int y)
 }
 
 void
-xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
+xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int len)
 {
 	Color drawcol;
 
 	/* remove the old cursor */
 	if (selected(ox, oy))
 		og.mode ^= ATTR_REVERSE;
-	xdrawglyph(og, ox, oy);
+
+	/* Redraw the line where cursor was previously.
+	 * It will restore the ligatures broken by the cursor. */
+	xdrawline(line, 0, oy, len);
 
 	if (IS_SET(MODE_HIDE))
 		return;
@@ -1558,6 +1601,9 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 		}
 		drawcol = dc.col[g.bg];
 	}
+
+	if (invertcolors)
+		drawcol = invertedcolor(&drawcol);
 
 	/* draw the new one */
 	if (IS_SET(MODE_FOCUSED)) {
